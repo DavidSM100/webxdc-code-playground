@@ -1,16 +1,15 @@
 const input = document.getElementById("input");
-const send = document.getElementById("send");
+const form = document.getElementById("form");
 const output = document.getElementById("output");
 
 function sendMsg(e) {
   e.preventDefault();
   const msg = input.value;
-  if (!msg.trim()) return;
   const info = `Someone sent "${msg}"`;
   window.webxdc.sendUpdate({ payload: msg, info: info }, "");
   input.value = "";
 }
-send.onclick = sendMsg;
+form.onsubmit = sendMsg;
 
 
 function receiveUpdate(update) {
