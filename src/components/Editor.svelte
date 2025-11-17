@@ -41,7 +41,7 @@
   async function getExtensions() {
     if (name === "index.js") {
       const innerWorker = new Worker(
-        new URL("../typescript/lsp-worker.ts", import.meta.url),
+        new URL("../typescript/worker.ts", import.meta.url),
         {
           type: "module",
         }
