@@ -52,7 +52,7 @@
       {/each}
     </div>
     <div class="actions">
-      <button style="color: #abb2bf;" class="action-btn" onclick={exportWebxdc}>
+      <button class="action-btn" onclick={exportWebxdc}>
         <Share2Icon size="15px" />
       </button>
     </div>
