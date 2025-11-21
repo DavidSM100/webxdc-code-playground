@@ -12,6 +12,7 @@ const typescriptLibFiles = import.meta.glob("./lib.*.d.ts", {
   base: "../../node_modules/typescript/lib/",
   query: "?raw",
   import: "default",
+  eager: true
 });
 
 expose(
@@ -19,7 +20,7 @@ expose(
     const fsMap = new Map<string, string>();
 
     for (const path in typescriptLibFiles) {
-      const content = await typescriptLibFiles[path]();
+      const content = typescriptLibFiles[path];
       //@ts-ignore
       fsMap.set(path.replace(".", ""), content);
     }

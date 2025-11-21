@@ -10,8 +10,5 @@ export default defineConfig({
     outDir: "../dist",
     emptyOutDir: true,
   },
-  worker: {
-    format: "es",
-  },
   plugins: [svelte(), mockWebxdc(), buildXDC()],
 });
