@@ -1,14 +1,19 @@
 <script lang="ts">
-  import localforage from "localforage";
-  import type { Icon } from "../types";
   import { onDestroy } from "svelte";
+  import { exists, readFile, writeFile } from "@zenfs/core/promises";
 
   let url: string | null = $state(null);
 
   async function setSavedIcon() {
-    const icon = await localforage.getItem<Icon>("icon");
-    if (icon) {
-      url = URL.createObjectURL(icon.blob);
+    let path: string | undefined;
+    if (await exists("/icon.png")) {
+      path = "/icon.png";
+    } else if (await exists("/icon.jpg")) {
+      path = "/icon.jpg";
+    }
+    if (path) {
+      const content = await readFile(path);
+      url = URL.createObjectURL(new Blob([new Uint8Array(content)]));
     }
   }
 
@@ -24,8 +29,7 @@
       ext = ".jpg";
     }
     if (!ext) return;
-    const icon = { ext: ext, blob: file };
-    await localforage.setItem("icon", icon);
+    await writeFile("/icon" + ext, new Uint8Array(await file.arrayBuffer()));
     if (url) {
       URL.revokeObjectURL(url);
     }

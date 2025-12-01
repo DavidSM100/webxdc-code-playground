@@ -1,10 +1,10 @@
 <script lang="ts">
   import eruda from "eruda?raw";
+  import { readFile } from "@zenfs/core/promises";
 
-  let { filesContents }: { filesContents: string[] } = $props();
-
-  function getHtml() {
-    const dom = new DOMParser().parseFromString(filesContents[0], "text/html");
+  async function getHtml() {
+    const entry = await readFile("/index.html", { encoding: "utf-8" });
+    const dom = new DOMParser().parseFromString(entry, "text/html");
     if (!dom.head) {
       dom.documentElement.append(dom.createElement("head"));
     }
@@ -21,7 +21,8 @@
       const path = new URL(link.href).pathname;
       if (path === "/index.css") {
         const style = dom.createElement("style");
-        style.textContent = filesContents[1];
+        const content = await readFile("/index.css", { encoding: "utf-8" });
+        style.textContent = content;
         link.replaceWith(style);
       }
     }
@@ -36,7 +37,8 @@
       }
       if (path === "/index.js") {
         script.removeAttribute("src");
-        script.textContent = filesContents[2];
+        const content = await readFile("/index.js", { encoding: "utf-8" });
+        script.textContent = content;
       }
     }
 
@@ -44,10 +46,12 @@
   }
 </script>
 
-<iframe
-  title="Preview"
-  srcdoc={getHtml()}
-  frameborder="0"
-  width="100%"
-  height="100%"
-></iframe>
+{#await getHtml() then html}
+  <iframe
+    title="Preview"
+    srcdoc={html}
+    frameborder="0"
+    width="100%"
+    height="100%"
+  ></iframe>
+{/await}

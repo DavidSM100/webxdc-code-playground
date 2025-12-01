@@ -2,31 +2,32 @@
   import Editor from "./components/Editor.svelte";
   import IconPicker from "./components/IconPicker.svelte";
   import Preview from "./components/Preview.svelte";
-  import type { Icon } from "./types";
   import { PlayIcon, Share2Icon } from "@lucide/svelte";
-  import localforage from "localforage";
   import JSZip from "jszip";
+  import { configureSingle } from "@zenfs/core";
+  import { IndexedDB } from "@zenfs/dom";
+  import { readdir, readFile, writeFile } from "@zenfs/core/promises";
 
   const filesNames = ["index.html", "index.css", "index.js", "manifest.toml"];
 
-  const filesContents: string[] = $state([]);
-
   let activeTab = $state("index.html");
 
-  async function setSavedContent(name: string, index: number) {
-    filesContents[index] =
-      (await localforage.getItem<string>(name)) ||
-      (await (await fetch("/template/" + name)).text());
+  async function setupTemplate() {
+    if (!(await readdir("/")).length) {
+      for (const name of filesNames) {
+        const path = "/" + name;
+        const content = await (await fetch("/template" + path)).text();
+        await writeFile(path, content);
+      }
+    }
   }
 
   async function exportWebxdc() {
     const zip = new JSZip();
-    for (const name of filesNames) {
-      zip.file(name, filesContents[filesNames.indexOf(name)]);
-    }
-    const icon = await localforage.getItem<Icon>("icon");
-    if (icon) {
-      zip.file("icon" + icon.ext, icon.blob);
+    const files = await readdir("/", { withFileTypes: true });
+    for (const file of files) {
+      const content = await readFile(file.name);
+      zip.file(file.name, content);
     }
     const zipBlob = await zip.generateAsync({
       type: "blob",
@@ -67,21 +68,19 @@
   </div>
 
   <div class="content">
-    {#if activeTab === "PREVIEW"}
-      <Preview {filesContents} />
-    {/if}
-    {#each filesNames as name, index}
-      {#await setSavedContent(name, index) then}
-        <Editor
-          bind:value={filesContents[index]}
-          {name}
-          hidden={name !== activeTab}
-        />
+    {#await configureSingle({ backend: IndexedDB }) then}
+      {#await setupTemplate() then}
+        {#if activeTab === "PREVIEW"}
+          <Preview />
+        {/if}
+        {#each filesNames as name}
+          <Editor path={"/" + name} hidden={name !== activeTab} />
+        {/each}
+        {#if activeTab === "icon"}
+          <IconPicker />
+        {/if}
       {/await}
-    {/each}
-    {#if activeTab === "icon"}
-      <IconPicker />
-    {/if}
+    {/await}
   </div>
 </div>
 

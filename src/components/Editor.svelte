@@ -6,7 +6,7 @@
   import { html } from "@codemirror/lang-html";
   import { css } from "@codemirror/lang-css";
   import { javascript } from "@codemirror/lang-javascript";
-  import localforage from "localforage";
+  import { writeFile, readFile } from "@zenfs/core/promises";
   import { type WorkerShape } from "@valtown/codemirror-ts/worker";
   import { wrap } from "comlink";
   import {
@@ -17,29 +17,20 @@
     tsHoverWorker,
   } from "@valtown/codemirror-ts";
 
-
-  let {
-    name,
-    hidden,
-    value = $bindable(),
-  }: { name: string; hidden: boolean; value: string } = $props();
+  let { path, hidden }: { path: string; hidden: boolean } = $props();
 
   // svelte-ignore non_reactive_update
   let lang: Function | undefined;
-  if (name.endsWith(".html")) {
+  if (path.endsWith(".html")) {
     lang = html;
-  } else if (name.endsWith(".css")) {
+  } else if (path.endsWith(".css")) {
     lang = css;
-  } else if (name.endsWith(".js")) {
+  } else if (path.endsWith(".js")) {
     lang = javascript;
   }
 
-  function onValueChange(value: string) {
-    localforage.setItem(name, value);
-  }
-
   async function getExtensions() {
-    if (name === "index.js") {
+    if (path === "/index.js") {
       const innerWorker = new Worker(
         new URL("../typescript/worker.ts", import.meta.url),
         {
@@ -73,19 +64,21 @@
 </script>
 
 <div style="height: 100%;" {hidden}>
-  {#await getExtensions() then extensions}
-    <CodeMirror
-      styles={{
-        "&": { height: "100%" },
-        ".cm-scroller": { "overflow-y": "auto" },
-      }}
-      {extensions}
-      lineWrapping={true}
-      theme={oneDark}
-      lang={lang && lang()}
-      bind:value
-      onchange={onValueChange}
-      onready={onReady}
-    />
+  {#await readFile(path, { encoding: "utf-8" }) then value}
+    {#await getExtensions() then extensions}
+      <CodeMirror
+        styles={{
+          "&": { height: "100%" },
+          ".cm-scroller": { "overflow-y": "auto" },
+        }}
+        {extensions}
+        lineWrapping={true}
+        theme={oneDark}
+        lang={lang && lang()}
+        {value}
+        onchange={(val) => writeFile(path, val)}
+        onready={onReady}
+      />
+    {/await}
   {/await}
 </div>

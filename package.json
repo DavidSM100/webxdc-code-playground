@@ -27,11 +27,12 @@
     "@typescript/vfs": "^1.6.2",
     "@valtown/codemirror-ts": "^2.3.1",
     "@webxdc/types": "^2.1.2",
+    "@zenfs/core": "^2.4.4",
+    "@zenfs/dom": "^1.2.5",
     "codemirror": "^6.0.2",
     "comlink": "^4.4.2",
     "eruda": "^3.4.3",
     "jszip": "^3.10.1",
-    "localforage": "^1.10.0",
     "svelte": "^5.43.5",
     "svelte-codemirror-editor": "^2.1.0",
     "typescript": "~5.9.3"
