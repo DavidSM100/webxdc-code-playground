@@ -5,6 +5,7 @@
   import { PlayIcon, Share2Icon } from "@lucide/svelte";
   import JSZip from "jszip";
   import { configureSingle } from "@zenfs/core";
+  import { resolve } from "@zenfs/core/path";
   import { IndexedDB } from "@zenfs/dom";
   import { readdir, readFile, writeFile } from "@zenfs/core/promises";
 
@@ -24,10 +25,12 @@
 
   async function exportWebxdc() {
     const zip = new JSZip();
-    const files = await readdir("/", { withFileTypes: true });
+    const files = await readdir("/", { withFileTypes: true, recursive: true });
     for (const file of files) {
-      const content = await readFile(file.name);
-      zip.file(file.name, content);
+      if (file.isDirectory()) continue;
+      const path = resolve(file.parentPath, file.name);
+      const content = await readFile(path);
+      zip.file(path.replace("/", ""), content);
     }
     const zipBlob = await zip.generateAsync({
       type: "blob",
