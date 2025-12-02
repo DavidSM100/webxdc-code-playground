@@ -8,6 +8,17 @@
   import { resolve } from "@zenfs/core/path";
   import { IndexedDB } from "@zenfs/dom";
   import { readdir, readFile, writeFile } from "@zenfs/core/promises";
+  import { wrap } from "comlink";
+  import type { WorkerShape } from "@valtown/codemirror-ts/worker";
+
+  const rawTypescriptWorker = new Worker(
+    new URL("./typescript/worker.ts", import.meta.url),
+    {
+      type: "module",
+    }
+  );
+  const typescriptWorker = wrap<WorkerShape>(rawTypescriptWorker);
+  typescriptWorker.initialize();
 
   const filesNames = ["index.html", "index.css", "index.js", "manifest.toml"];
 
@@ -78,7 +89,7 @@
         {/if}
         {#each filesNames as name}
           <div hidden={name !== activeTab} style="height: 100%;">
-            <Editor path={"/" + name} />
+            <Editor path={"/" + name} {typescriptWorker} />
           </div>
         {/each}
         {#if activeTab === "icon"}

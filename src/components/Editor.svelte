@@ -8,7 +8,6 @@
   import { javascript } from "@codemirror/lang-javascript";
   import { writeFile, readFile } from "@zenfs/core/promises";
   import { type WorkerShape } from "@valtown/codemirror-ts/worker";
-  import { wrap } from "comlink";
   import {
     tsFacetWorker,
     tsSyncWorker,
@@ -17,7 +16,10 @@
     tsHoverWorker,
   } from "@valtown/codemirror-ts";
 
-  let { path }: { path: string } = $props();
+  let {
+    path,
+    typescriptWorker,
+  }: { path: string; typescriptWorker: WorkerShape } = $props();
 
   // svelte-ignore non_reactive_update
   let lang: Function | undefined;
@@ -31,18 +33,10 @@
 
   async function getExtensions() {
     if (path === "/index.js") {
-      const innerWorker = new Worker(
-        new URL("../typescript/worker.ts", import.meta.url),
-        {
-          type: "module",
-        }
-      );
-      const worker = wrap<WorkerShape>(innerWorker);
-      await worker.initialize();
       const path = "index.js";
       return [
         basicSetup,
-        tsFacetWorker.of({ worker, path }),
+        tsFacetWorker.of({ worker: typescriptWorker, path }),
         tsSyncWorker(),
         tsLinterWorker(),
         autocompletion({
