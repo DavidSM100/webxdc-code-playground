@@ -37,6 +37,22 @@
       }
     }
 
+    const imgs = Object.values(dom.getElementsByTagName("img"));
+    for (const img of imgs) {
+      if (
+        !img.src ||
+        img.src.startsWith("data:") ||
+        img.src.startsWith("blob:")
+      ) {
+        return;
+      }
+      const path = new URL(img.src).pathname;
+      if (await exists(path)) {
+        const base64 = await readFile(path, { encoding: "base64" });
+        img.src = "data:;base64," + base64;
+      }
+    }
+
     const erudaScript = dom.createElement("script");
     erudaScript.textContent = eruda + "\neruda.init();";
     dom.head.prepend(erudaScript);
