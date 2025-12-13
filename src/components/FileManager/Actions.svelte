@@ -151,6 +151,8 @@
         placeholder="Name"
         bind:this={nameInput}
         required
+        autocapitalize="off"
+        autocorrect="off"
       />
       <button>
         <CheckIcon size="20" />
