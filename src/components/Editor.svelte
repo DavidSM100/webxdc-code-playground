@@ -10,6 +10,7 @@
   import { html } from "@codemirror/lang-html";
   import { css } from "@codemirror/lang-css";
   import { javascript, snippets } from "@codemirror/lang-javascript";
+  import { json } from "@codemirror/lang-json";
   import { writeFile, readFile } from "@zenfs/core/promises";
   import { type WorkerShape } from "@valtown/codemirror-ts/worker";
   import {
@@ -75,6 +76,8 @@
       return [basicSetup, html()];
     } else if (path.endsWith(".css")) {
       return [basicSetup, css()];
+    } else if (path.endsWith(".json")) {
+      return [basicSetup, json()];
     }
 
     return [basicSetup];
