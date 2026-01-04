@@ -2,10 +2,19 @@ import localforage from "localforage";
 import { readdir, readFile, writeFile } from "@zenfs/core/promises";
 import JSZip from "jszip";
 import { resolve } from "@zenfs/core/path";
+import { configureSingle } from "@zenfs/core";
+import { IndexedDB } from "@zenfs/dom";
 
 export const generalDB = localforage.createInstance({
   name: "code-playground-general-database",
 });
+
+export const setupZenFSDB = async () => {
+  await configureSingle({
+    backend: IndexedDB,
+    storeName: "code-playground-fs-database",
+  });
+};
 
 export async function setupTemplate() {
   if (!(await readdir("/")).length) {
