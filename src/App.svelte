@@ -75,7 +75,7 @@
       >
         <PlayIcon size="20" />
       </button>
-      <button class="action-btn" onclick={exportWebxdc} title="Share">
+      <button class="tab" onclick={exportWebxdc} title="Share">
         <Share2Icon size="20" />
       </button>
     </div>
@@ -147,25 +147,6 @@
   }
 
   .tab:hover {
-    background-color: #3a3f4b;
-  }
-
-  .action-btn {
-    background: transparent;
-    border: none;
-    color: #7d8799;
-    padding: 15px 12px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-  }
-
-  .action-btn:hover {
-    background-color: #2c313c;
-    color: #abb2bf;
-  }
-
-  .action-btn:active {
     background-color: #3a3f4b;
   }
 </style>
