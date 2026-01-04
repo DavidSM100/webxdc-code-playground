@@ -5,11 +5,9 @@
   import FileManager from "./components/FileManager/FileManager.svelte";
   import { openTabs, activeTab } from "./components/Tabs/state.svelte";
   import { FilesIcon, PlayIcon, Share2Icon } from "@lucide/svelte";
-  import { configureSingle } from "@zenfs/core";
-  import { IndexedDB } from "@zenfs/dom";
   import { wrap } from "comlink";
   import type { WorkerShape } from "@valtown/codemirror-ts/worker";
-  import { setupTemplate, exportWebxdc } from "./app";
+  import { setupZenFSDB, setupTemplate, exportWebxdc } from "./app";
 
   const rawTypescriptWorker = new Worker(
     new URL("./typescript/worker.ts", import.meta.url),
@@ -46,7 +44,7 @@
   </div>
 
   <div class="content">
-    {#await configureSingle({ backend: IndexedDB }) then}
+    {#await setupZenFSDB() then}
       {#await setupTemplate() then}
         <div hidden={activeTab.id !== "FILES"} style="height: 100%;">
           <FileManager />
