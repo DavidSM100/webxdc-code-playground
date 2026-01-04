@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { openTabs, activeTab } from "../../state.svelte";
+  import { openTabs, activeTab } from "./state.svelte";
   import { XIcon } from "@lucide/svelte";
 
   function onTabClick(tabId: string) {

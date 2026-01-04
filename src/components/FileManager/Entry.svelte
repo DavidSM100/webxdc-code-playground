@@ -11,7 +11,7 @@
   import { getDirTree, sortNodes } from "./util";
   import tippy from "tippy.js";
   import { onMount } from "svelte";
-  import { activeTab, openTabs } from "../../state.svelte";
+  import { activeTab, openTabs } from "../Tabs/state.svelte";
 
   let {
     dirTree = $bindable(),

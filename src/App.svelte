@@ -3,7 +3,7 @@
   import Editor from "./components/Editor.svelte";
   import Preview from "./components/Preview.svelte";
   import FileManager from "./components/FileManager/FileManager.svelte";
-  import { openTabs, activeTab } from "./state.svelte";
+  import { openTabs, activeTab } from "./components/Tabs/state.svelte";
   import { FilesIcon, PlayIcon, Share2Icon } from "@lucide/svelte";
   import JSZip from "jszip";
   import { configureSingle } from "@zenfs/core";

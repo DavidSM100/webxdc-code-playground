@@ -19,7 +19,7 @@
   } from "@zenfs/core/promises";
   import { resolve, dirname } from "@zenfs/core/path";
   import { isValidName } from "./util";
-  import { openTabs } from "../../state.svelte";
+  import { openTabs } from "../Tabs/state.svelte";
   import { copyText } from "../../util";
   import { tick } from "svelte";
 
