@@ -126,27 +126,8 @@
     display: flex;
     border-left: 0.5px solid #3a3f4b;
   }
-  
-  .tab {
-    background-color: #21252b;
-    color: #7d8799;
-    border: none;
+
+  .header .tab {
     padding: 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-right: 0.5px solid #3a3f4b;
-    flex: 0 0 auto;
-  }
-
-  .tab.active {
-    background-color: #282c34;
-    color: #abb2bf;
-    border-top: 2px solid #61afef;
-  }
-
-  .tab:hover {
-    background-color: #3a3f4b;
   }
 </style>
