@@ -1,9 +1,10 @@
 <script lang="ts">
+  import Tabs from "./components/Tabs/Tabs.svelte";
   import Editor from "./components/Editor.svelte";
   import Preview from "./components/Preview.svelte";
   import FileManager from "./components/FileManager/FileManager.svelte";
   import { openTabs, activeTab } from "./state.svelte";
-  import { FilesIcon, PlayIcon, Share2Icon, XIcon } from "@lucide/svelte";
+  import { FilesIcon, PlayIcon, Share2Icon } from "@lucide/svelte";
   import JSZip from "jszip";
   import { configureSingle } from "@zenfs/core";
   import { resolve } from "@zenfs/core/path";
@@ -52,29 +53,11 @@
       },
     });
   }
-
-  function onTabKeydown(e: KeyboardEvent, tabId: string) {
-    if (e.key === "Enter" || e.key === " ") {
-      activeTab.id = tabId;
-    }
-  }
-
-  function onCloseTabClick(tabId: string) {
-    const openTabsIds = Object.keys(openTabs);
-    if (openTabsIds.length > 1) {
-      const currentTabIndex = openTabsIds.indexOf(tabId);
-      activeTab.id =
-        openTabsIds[currentTabIndex + 1] || openTabsIds[currentTabIndex - 1];
-    } else {
-      activeTab.id = "FILES";
-    }
-    delete openTabs[tabId];
-  }
 </script>
 
 <div class="container">
   <div class="header">
-    <div class="panel-left">
+    <div>
       <button
         class={activeTab.id === "FILES" ? "tab active" : "tab"}
         onclick={() => (activeTab.id = "FILES")}
@@ -82,30 +65,8 @@
       >
         <FilesIcon size="20" />
       </button>
-      {#each Object.entries(openTabs) as [path, tab]}
-        <div
-          class={activeTab.id === path ? "tab active" : "tab"}
-          onclick={() => (activeTab.id = path)}
-          role="button"
-          tabindex="0"
-          onkeydown={(e) => onTabKeydown(e, path)}
-        >
-          {tab.name}
-          {#if activeTab.id === path}
-            <button
-              aria-label="Close tab"
-              onclick={(e) => {
-                e.stopPropagation();
-                onCloseTabClick(path);
-              }}
-              class="close-tab-btn"
-            >
-              <XIcon size="20" />
-            </button>
-          {/if}
-        </div>
-      {/each}
     </div>
+    <Tabs />
     <div class="panel-right">
       <button
         class={activeTab.id === "PREVIEW" ? "tab active" : "tab"}
@@ -161,18 +122,12 @@
     height: calc(100% - 45px);
   }
 
-  .panel-left {
-    height: 100%;
-    display: flex;
-    overflow-x: auto;
-  }
-
   .panel-right {
     height: 100%;
     display: flex;
     border-left: 0.5px solid #3a3f4b;
   }
-
+  
   .tab {
     background-color: #21252b;
     color: #7d8799;
@@ -213,31 +168,5 @@
 
   .action-btn:active {
     background-color: #3a3f4b;
-  }
-
-  .close-tab-btn {
-    color: #7d8799;
-    background-color: #2e323c;
-    margin-left: 5px;
-    border: none;
-    border-radius: 3px;
-    padding: 2px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .close-tab-btn:hover {
-    color: #fff;
-    background-color: #464c5c;
-  }
-
-  .close-tab-btn:focus {
-    outline: 0.5px solid #61afef;
-  }
-
-  .close-tab-btn:active {
-    color: #fff;
-    background-color: #535a6d;
   }
 </style>
