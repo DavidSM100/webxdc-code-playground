@@ -57,7 +57,7 @@
 
 <div class="container">
   <div class="header">
-    <div>
+    <div class="panel-left">
       <button
         class={activeTab.id === "FILES" ? "tab active" : "tab"}
         onclick={() => (activeTab.id = "FILES")}
@@ -65,8 +65,8 @@
       >
         <FilesIcon size="20" />
       </button>
+      <Tabs />
     </div>
-    <Tabs />
     <div class="panel-right">
       <button
         class={activeTab.id === "PREVIEW" ? "tab active" : "tab"}
@@ -119,6 +119,11 @@
 
   .content {
     height: calc(100% - 45px);
+  }
+
+  .panel-left {
+    height: 100%;
+    display: flex;
   }
 
   .panel-right {
