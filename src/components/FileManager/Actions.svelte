@@ -212,8 +212,8 @@
   }
 
   .container {
-    min-width: 200px;
-    width: 100%;
+    min-width: 150px;
+    width: max-content;
     height: 100%;
     background-color: #1c1f27;
   }
