@@ -4,10 +4,18 @@
   import Preview from "./components/Preview.svelte";
   import FileManager from "./components/FileManager/FileManager.svelte";
   import { openTabs, activeTab } from "./components/Tabs/state.svelte";
-  import { FilesIcon, PlayIcon, Share2Icon } from "@lucide/svelte";
+  import {
+    EllipsisVerticalIcon,
+    FilesIcon,
+    PlayIcon,
+    Share2Icon,
+  } from "@lucide/svelte";
   import { wrap } from "comlink";
   import type { WorkerShape } from "@valtown/codemirror-ts/worker";
   import { setupZenFSDB, setupTemplate, exportWebxdc } from "./app";
+  import { createFloatingActions } from "svelte-floating-ui";
+  import { offset } from "svelte-floating-ui/dom";
+  import { tick } from "svelte";
 
   const rawTypescriptWorker = new Worker(
     new URL("./typescript/worker.ts", import.meta.url),
@@ -17,6 +25,30 @@
   );
   const typescriptWorker = wrap<WorkerShape>(rawTypescriptWorker);
   typescriptWorker.initialize();
+
+  let showActions = $state(false);
+  // svelte-ignore non_reactive_update
+  let actionsDiv: HTMLDivElement;
+
+  const [floatingRef, floatingContent] = createFloatingActions({
+    strategy: "fixed",
+    placement: "left-start",
+    middleware: [offset({ crossAxis: 6, mainAxis: 6 })],
+  });
+
+  async function onShowActionsClick() {
+    showActions = true;
+    await tick();
+    actionsDiv.focus();
+  }
+
+  function onActionsFocusOut() {
+    setTimeout(() => {
+      if (!actionsDiv.contains(document.activeElement)) {
+        showActions = false;
+      }
+    }, 0);
+  }
 </script>
 
 <div class="container">
@@ -37,11 +69,32 @@
       >
         <PlayIcon size="20" />
       </button>
-      <button class="tab" onclick={exportWebxdc} title="Share">
-        <Share2Icon size="20" />
+      <button
+        class="tab"
+        title="More"
+        use:floatingRef
+        onclick={onShowActionsClick}
+      >
+        <EllipsisVerticalIcon size="20" />
       </button>
     </div>
   </div>
+
+  {#if showActions}
+    <div
+      class="actions"
+      role="menu"
+      tabindex="-1"
+      bind:this={actionsDiv}
+      use:floatingContent
+      onfocusout={onActionsFocusOut}
+    >
+      <button onclick={exportWebxdc}>
+        <Share2Icon size="20px" />
+        Share webxdc
+      </button>
+    </div>
+  {/if}
 
   <div class="content">
     {#await setupZenFSDB() then}
@@ -89,5 +142,43 @@
 
   .header .tab {
     padding: 10px;
+  }
+
+  .actions {
+    position: fixed;
+    z-index: 1000;
+    width: max-content;
+    min-width: 150px;
+    border: 0.5px solid #3a3f4b;
+    display: flex;
+    flex-direction: column;
+    background-color: #1c1f27;
+  }
+
+  .actions button {
+    display: flex;
+    gap: 3px;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    color: #abb2bf;
+    background-color: transparent;
+    border-bottom: 0.1px solid #3a3f4b;
+    outline-offset: -2px;
+  }
+
+  .actions button:hover {
+    color: #fff;
+    background-color: #454b5a;
+  }
+
+  .actions button:focus {
+    color: #fff;
+    outline: 0.5px solid #61afef;
+  }
+
+  .actions button:active {
+    color: #fff;
+    background-color: #576073;
   }
 </style>
