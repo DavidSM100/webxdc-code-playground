@@ -1,6 +1,6 @@
 <script lang="ts">
   import Tabs from "./components/Tabs/Tabs.svelte";
-  import Editor from "./components/Editor.svelte";
+  import Editor from "./components/Editor/Editor.svelte";
   import Preview from "./components/Preview.svelte";
   import FileManager from "./components/FileManager/FileManager.svelte";
   import { openTabs, activeTab } from "./components/Tabs/state.svelte";
