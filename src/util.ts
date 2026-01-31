@@ -34,3 +34,23 @@ export function downloadFile(content: Blob, filename: string) {
     URL.revokeObjectURL(link.href);
   }, 5000);
 }
+
+export async function importFiles(options?: {
+  multiple: boolean;
+}): Promise<File[]> {
+  return new Promise((resolve) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    if (options && options.multiple === true) {
+      input.multiple = true;
+    }
+    input.style.display = "none";
+    input.onchange = () => {
+      const files = Array.from(input.files!);
+      resolve(files);
+      document.body.removeChild(input);
+    };
+    document.body.appendChild(input);
+    input.click();
+  });
+}

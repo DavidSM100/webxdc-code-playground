@@ -20,7 +20,7 @@
   import { resolve, dirname } from "@zenfs/core/path";
   import { isValidName } from "./util";
   import { openTabs } from "../Tabs/state.svelte";
-  import { copyText } from "../../util";
+  import { copyText, importFiles } from "../../util";
   import { tick } from "svelte";
 
   let {
@@ -65,9 +65,9 @@
     }
   }
 
-  async function importFiles() {
+  async function _importFiles() {
     try {
-      const files = await window.webxdc.importFiles({ multiple: true });
+      const files = await importFiles({ multiple: true });
       for (const file of files) {
         const path = resolve(node.path, file.name);
         if (await exists(path)) {
@@ -171,7 +171,7 @@
           New file
         </button>
 
-        <button onclick={importFiles}>
+        <button onclick={_importFiles}>
           <ImportIcon size="20" />
           Import files
         </button>
