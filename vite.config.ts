@@ -7,8 +7,8 @@ import { buildXDC, mockWebxdc, eruda } from "@webxdc/vite-plugins";
 export default defineConfig({
   root: "src",
   build: {
-    outDir: "../dist",
+    outDir: "../dist-xdc",
     emptyOutDir: true,
   },
-  plugins: [svelte(), mockWebxdc(), eruda(), buildXDC()],
+  plugins: [svelte(), mockWebxdc(), eruda(), buildXDC({ inDir: "dist-xdc" })],
 });
