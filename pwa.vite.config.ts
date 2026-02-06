@@ -5,6 +5,7 @@ import { VitePWA } from "vite-plugin-pwa";
 // https://vite.dev/config/
 export default defineConfig({
   root: "src",
+  publicDir: "public-pwa",
   build: {
     outDir: "../dist-pwa",
     emptyOutDir: true,
@@ -17,7 +18,7 @@ export default defineConfig({
         short_name: "Playground",
       },
       workbox: { maximumFileSizeToCacheInBytes: 999999999999 },
-      pwaAssets: { image: "public/icon.png" },
+      pwaAssets: { image: "public-pwa/icon.png" },
     }),
   ],
 });

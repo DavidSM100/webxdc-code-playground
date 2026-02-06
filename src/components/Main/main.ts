@@ -5,7 +5,7 @@ import { resolve } from "@zenfs/core/path";
 import { configureSingle } from "@zenfs/core";
 import { IndexedDB } from "@zenfs/dom";
 import { downloadFile } from "../../util";
-import type { Templates } from "./types";
+import type { Template } from "./types";
 import { openTabs } from "../Tabs/state.svelte";
 
 export const generalDB = localforage.createInstance({
@@ -21,18 +21,9 @@ export const setupZenFSDB = async () => {
 
 export async function setupTemplate() {
   if (!(await readdir("/")).length) {
-    const templates: Templates = await (
-      await fetch("templates/templates.json")
-    ).json();
-    let name: string;
-    if (window.webxdc) {
-      name = "webxdc";
-    } else {
-      name = "web";
-    }
-    const template = templates[name];
+    const template: Template = await (await fetch("template.json")).json();
     for (const path of template.files) {
-      const content = await (await fetch(`templates/${name}/${path}`)).text();
+      const content = await (await fetch("template" + path)).text();
       await writeFile(path, content);
     }
 

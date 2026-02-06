@@ -1,6 +1,4 @@
-export interface Templates {
-  [name: string]: {
-    files: string[];
-    tabs: { [id: string]: { name: string } };
-  };
+export interface Template {
+  files: string[];
+  tabs: { [id: string]: { name: string } };
 }
