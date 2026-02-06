@@ -4,6 +4,8 @@
   import { generalExtensions, getLanguageExtensions } from "./extensions";
   import { writeFile, readFile } from "@zenfs/core/promises";
   import { type WorkerShape } from "@valtown/codemirror-ts/worker";
+  import { keymap } from "@codemirror/view";
+  import { formatEditorContent } from "./editor";
 
   let {
     path,
@@ -27,12 +29,25 @@
     view.destroy();
   });
 
+  function getFormatKeymap() {
+    return keymap.of([
+      {
+        key: "Alt-Shift-f",
+        run: (view) => {
+          formatEditorContent(view, path);
+          return true;
+        },
+      },
+    ]);
+  }
+
   function createEditorView(doc: string) {
     return new EditorView({
       parent: container,
       doc: doc,
       extensions: [
         generalExtensions,
+        getFormatKeymap(),
         getLanguageExtensions(path, typescriptWorker),
       ],
       dispatchTransactions: (transactions) => {
